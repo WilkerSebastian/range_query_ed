@@ -4,9 +4,11 @@ CXX_FLAGS := -Wall -Wextra -std=c17 -ggdb
 BIN		:= bin
 SRC		:= src
 INCLUDE	:= include
+TEST    := test
 
 LIBRARIES	:= -ljansson -lm
 EXECUTABLE	:= range
+TEST_EXECUTABLE := test_range
 
 JANSSON_VERSION := 2.13.1
 JANSSON_DIR := jansson-$(JANSSON_VERSION)
@@ -29,6 +31,12 @@ dependencies:
 	@cd $(JANSSON_DIR) && ./configure && make && make check && sudo make install
 	@echo "Jansson $(JANSSON_VERSION) instalado com sucesso!"
 	@rm -rf $(JANSSON_DIR)
+
+test: $(BIN)/$(TEST_EXECUTABLE)
+	./$(BIN)/$(TEST_EXECUTABLE)
+
+$(BIN)/$(TEST_EXECUTABLE): $(filter-out $(SRC)/main.c, $(wildcard $(SRC)/*.c)) $(wildcard $(TEST)/*.c)
+	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
 
 clean:
 	-rm -rf $(BIN)
