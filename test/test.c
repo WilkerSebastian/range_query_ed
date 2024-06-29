@@ -94,13 +94,13 @@ void test_municipio() {
 
 }
 
-void test_rotacao(){
-    tnode * x;
-    tnode * y;
-    tnode * a;
-    tnode * b;
-    tnode * c;
-    tnode * arv;
+void test_rotacao() {
+    tnode *x;
+    tnode *y;
+    tnode *a;
+    tnode *b;
+    tnode *c;
+    tnode *arv;
     arv = NULL;
     assert(arv == NULL);
     x = malloc(sizeof(tnode));
@@ -108,117 +108,124 @@ void test_rotacao(){
     a = malloc(sizeof(tnode));
     b = malloc(sizeof(tnode));
     c = malloc(sizeof(tnode));
-    x->item = 5;
-    y->item = 10;
-    a->item = 3;
-    b->item = 7;
-    c->item = 12;
+    x->items = malloc(sizeof(LinkedList));
+    y->items = malloc(sizeof(LinkedList));
+    a->items = malloc(sizeof(LinkedList));
+    b->items = malloc(sizeof(LinkedList));
+    c->items = malloc(sizeof(LinkedList));
+    x->items->item = 5;
+    y->items->item = 10;
+    a->items->item = 3;
+    b->items->item = 7;
+    c->items->item = 12;
     x->esq = a;
     x->dir = b;
     y->esq = x;
     y->dir = c;
     arv = y;
     _rd(&arv);
-    assert(arv->item == 5);
-    assert(arv->esq->item ==3);
-    assert(arv->dir->item ==10);
-    assert(arv->dir->dir->item == 12);
-    assert(arv->dir->esq->item == 7);
+    assert(arv->items->item == 5);
+    assert(arv->esq->items->item == 3);
+    assert(arv->dir->items->item == 10);
+    assert(arv->dir->dir->items->item == 12);
+    assert(arv->dir->esq->items->item == 7);
     _re(&arv);
-    assert(arv->item == 10);
-    assert(arv->esq->item ==5);
-    assert(arv->dir->item ==12);
-    assert(arv->esq->dir->item == 7);
-    assert(arv->esq->esq->item == 3);
-    avl_destroi(arv);
- }
+    assert(arv->items->item == 10);
+    assert(arv->esq->items->item == 5);
+    assert(arv->dir->items->item == 12);
+    assert(arv->esq->dir->items->item == 7);
+    assert(arv->esq->esq->items->item == 3);
 
-void test_insere(){
-    tnode * arv;
-    arv = NULL;
-    assert(arv == NULL);
-    
-    avl_insere(&arv,10);    
-    avl_insere(&arv,15);
-    avl_insere(&arv,20);
-    assert(arv->item == 15);
-    assert(arv->esq->item == 10);
-    assert(arv->dir->item == 20);
-
-    avl_insere(&arv,50);
-    avl_insere(&arv,23);
-    assert(arv->item == 15);
-    assert(arv->esq->item == 10);
-    assert(arv->dir->item == 23);
-    assert(arv->dir->esq->item == 20);
-    assert(arv->dir->dir->item == 50);
-
-    avl_insere(&arv,5);
-    avl_insere(&arv,30);
-    avl_insere(&arv,25);
-    assert(arv->item == 15);
-    assert(arv->esq->item == 10);
-    assert(arv->esq->esq->item == 5);
-    assert(arv->dir->item == 23);
-    assert(arv->dir->esq->item == 20);
-    assert(arv->dir->dir->item == 30);
-    assert(arv->dir->dir->esq->item == 25);
-    assert(arv->dir->dir->dir->item == 50);
-
-    avl_insere(&arv,7);
-    assert(arv->item == 15);
-    assert(arv->esq->item == 7);
-    assert(arv->esq->esq->item == 5);
-    assert(arv->esq->dir->item == 10);
-    assert(arv->dir->item == 23);
-    assert(arv->dir->esq->item == 20);
-    assert(arv->dir->dir->item == 30);
-    assert(arv->dir->dir->dir->item == 50);
-    assert(arv->dir->dir->esq->item == 25);
     avl_destroi(arv);
 }
 
-void test_remove(){
-    tnode * arv;
+void test_insere() {
+    tnode *arv;
     arv = NULL;
     assert(arv == NULL);
-    avl_insere(&arv,10);    
-    avl_insere(&arv,15);
-    avl_insere(&arv,20);
-    avl_insere(&arv,50);
-    avl_insere(&arv,23);
-    avl_insere(&arv,5);
-    avl_insere(&arv,30);
-    avl_insere(&arv,25);
     
-    avl_remove(&arv,15);
-    assert(arv->item == 20);
-    assert(arv->dir->item == 30);
-    assert(arv->esq->item == 10);
+    avl_insere(&arv, 10);    
+    avl_insere(&arv, 15);
+    avl_insere(&arv, 20);
+    assert(arv->items->item == 15);
+    assert(arv->esq->items->item == 10);
+    assert(arv->dir->items->item == 20);
+
+    avl_insere(&arv, 50);
+    avl_insere(&arv, 23);
+    assert(arv->items->item == 15);
+    assert(arv->esq->items->item == 10);
+    assert(arv->dir->items->item == 23);
+    assert(arv->dir->esq->items->item == 20);
+    assert(arv->dir->dir->items->item == 50);
+
+    avl_insere(&arv, 5);
+    avl_insere(&arv, 30);
+    avl_insere(&arv, 25);
+    assert(arv->items->item == 15);
+    assert(arv->esq->items->item == 10);
+    assert(arv->esq->esq->items->item == 5);
+    assert(arv->dir->items->item == 23);
+    assert(arv->dir->esq->items->item == 20);
+    assert(arv->dir->dir->items->item == 30);
+    assert(arv->dir->dir->esq->items->item == 25);
+    assert(arv->dir->dir->dir->items->item == 50);
+
+    avl_insere(&arv, 7);
+    assert(arv->items->item == 15);
+    assert(arv->esq->items->item == 7);
+    assert(arv->esq->esq->items->item == 5);
+    assert(arv->esq->dir->items->item == 10);
+    assert(arv->dir->items->item == 23);
+    assert(arv->dir->esq->items->item == 20);
+    assert(arv->dir->dir->items->item == 30);
+    assert(arv->dir->dir->dir->items->item == 50);
+    assert(arv->dir->dir->esq->items->item == 25);
+
+    avl_destroi(arv);
+}
+
+void test_remove() {
+    tnode *arv;
+    arv = NULL;
+    assert(arv == NULL);
+    avl_insere(&arv, 10);    
+    avl_insere(&arv, 15);
+    avl_insere(&arv, 20);
+    avl_insere(&arv, 50);
+    avl_insere(&arv, 23);
+    avl_insere(&arv, 5);
+    avl_insere(&arv, 30);
+    avl_insere(&arv, 25);
     
-    assert(arv->esq->esq->item == 5);
-
-    assert(arv->dir->dir->item == 50);
-    assert(arv->dir->esq->item == 23);
-    assert(arv->dir->esq->dir->item == 25);
-
-    avl_remove(&arv,20);
-    assert(arv->item == 23);
-    assert(arv->dir->item == 30);
-    assert(arv->esq->item == 10);
+    avl_remove(&arv, 15);
+    assert(arv->items->item == 20);
+    assert(arv->dir->items->item == 30);
+    assert(arv->esq->items->item == 10);
     
-    assert(arv->esq->esq->item == 5);
+    assert(arv->esq->esq->items->item == 5);
 
-    assert(arv->dir->dir->item == 50);
-    assert(arv->dir->esq->item == 25);
+    assert(arv->dir->dir->items->item == 50);
+    assert(arv->dir->esq->items->item == 23);
+    assert(arv->dir->esq->dir->items->item == 25);
 
+    avl_remove(&arv, 20);
+    assert(arv->items->item == 23);
+    assert(arv->dir->items->item == 30);
+    assert(arv->esq->items->item == 10);
+    
+    assert(arv->esq->esq->items->item == 5);
 
-    avl_remove(&arv,10);
-    assert(arv->item == 23);
-    assert(arv->dir->item == 30);
-    assert(arv->esq->item ==5);
-    assert(arv->dir->dir->item == 50);
-    assert(arv->dir->esq->item == 25);
+    assert(arv->dir->dir->items->item == 50);
+    assert(arv->dir->esq->items->item == 25);
+
+    avl_remove(&arv, 10);
+    assert(arv->items->item == 23);
+    assert(arv->dir->items->item == 30);
+    assert(arv->esq->items->item == 5);
+    assert(arv->dir->dir->items->item == 50);
+    assert(arv->dir->esq->items->item == 25);
+
     avl_destroi(arv);
 }
 

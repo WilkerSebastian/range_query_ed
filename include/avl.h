@@ -8,10 +8,16 @@
 
 typedef int titem;
 
-typedef struct _node{
+typedef struct lnode {
     titem item;
+    struct lnode *prox;
+} LinkedList;
+
+typedef struct _node{
+    LinkedList *items;
     struct _node *esq;
     struct _node *dir;
+    struct _node *father;
     int h;
 }tnode;
 
@@ -22,5 +28,10 @@ void avl_destroi(tnode * parv);
 void _rd(tnode ** pparv);
 void _re(tnode ** pparv);
 void _avl_rebalancear(tnode ** pparv);
+
+void addItem(tnode *no, titem item);
+tnode *createNode(titem item);
+
+tnode *sucessor(tnode *node);
 
 #endif
