@@ -46,17 +46,17 @@ tnode *createNode(titem item) {
 
 }
 
-void avl_insere(tnode ** parv,titem item){
+void avl_insere(tnode ** parv,titem item, Comparator comparator){
     if (*parv == NULL){
         *parv = createNode(item);
-    }else if ((*parv)->items->item > item) {
-        avl_insere(&(*parv)->esq, item);
+    }else if (comparator((*parv)->items->item, item) > 0) {
+        avl_insere(&(*parv)->esq, item, comparator);
         if ((*parv)->esq != NULL) {
             (*parv)->esq->father = *parv;
         }
-    } else if ((*parv)->items->item < item) {
-        avl_insere(&(*parv)->dir, item);
-        if ((*parv)->dir != NULL) {
+    } else if (comparator((*parv)->items->item, item) < 0) {
+        avl_insere(&(*parv)->dir, item, comparator);
+         if ((*parv)->dir != NULL) {
             (*parv)->dir->father = *parv;
         }
     } else {
@@ -73,16 +73,10 @@ void _rd(tnode **parv) {
     x->dir = y;
     y->esq = B;
 
-    x->father = y->father;
-    y->father = x;
-    if (B != NULL) {
-        B->father = y;
-    }
-
-    *parv = x;
-
     y->h = max(altura(y->esq), altura(y->dir)) + 1;
     x->h = max(altura(x->esq), altura(x->dir)) + 1;
+
+    *parv = x;
 }
 
 void _re(tnode **parv) {
@@ -93,16 +87,10 @@ void _re(tnode **parv) {
     y->esq = x;
     x->dir = B;
 
-    y->father = x->father;
-    x->father = y;
-    if (B != NULL) {
-        B->father = x;
-    }
-
-    *parv = y;
-
     x->h = max(altura(x->esq), altura(x->dir)) + 1;
     y->h = max(altura(y->esq), altura(y->dir)) + 1;
+
+    *parv = y;
 }
 
 
@@ -143,36 +131,48 @@ tnode ** percorre_esq(tnode ** arv){
         return &(aux->esq);
     }
 }
-void avl_remove(tnode **parv, titem reg){
+void avl_remove(tnode **parv, titem item, Comparator comparator) {
     int cmp;
     tnode *aux;
     tnode **sucessor;
-    if (*parv != NULL){
-        cmp  = (*parv)->items->item  - reg;
-        if (cmp > 0){ /* ir esquerda*/
-            avl_remove(&((*parv)->esq), reg);
-        }else if (cmp < 0){ /*ir direita*/
-            avl_remove(&((*parv)->dir), reg);
-        }else{ /* ACHOU  */
-            if ((*parv)->esq == NULL && (*parv)->dir == NULL){   /* no folha */
+    if (*parv != NULL) {
+        cmp = comparator((*parv)->items->item, item);
+        if (cmp > 0) {
+            avl_remove(&((*parv)->esq), item, comparator);
+        } else if (cmp < 0) {
+            avl_remove(&((*parv)->dir), item, comparator);
+        } else {
+            if ((*parv)->esq == NULL && (*parv)->dir == NULL) {
+                LinkedList *current = (*parv)->items;
+                while (current != NULL) {
+                    LinkedList *aux = current;
+                    current = current->prox;
+                    free(aux);
+                }
                 free(*parv);
                 *parv = NULL;
-            }else if ((*parv)->esq == NULL || (*parv)->dir == NULL){ /* tem um filho*/
+            } else if ((*parv)->esq == NULL || (*parv)->dir == NULL) {
                 aux = *parv;
-                if ((*parv)->esq == NULL){
+                if ((*parv)->esq == NULL) {
                     *parv = (*parv)->dir;
-                }else{
+                } else {
                     *parv = (*parv)->esq;
                 }
+                LinkedList *current = aux->items;
+                while (current != NULL) {
+                    LinkedList *aux = current;
+                    current = current->prox;
+                    free(aux);
+                }
                 free(aux);
-            }else{ /* tem dois filhos */
+            } else {
                 sucessor = percorre_esq(&(*parv)->dir);
                 (*parv)->items = (*sucessor)->items;
-                avl_remove(&(*parv)->dir,(*sucessor)->items->item);
+                avl_remove(&(*parv)->dir, (*sucessor)->items->item, comparator);
             }
         }
-        if (*parv != NULL){
-            (*parv)->h = max(altura((*parv)->esq),altura((*parv)->dir)) + 1;
+        if (*parv != NULL) {
+            (*parv)->h = max(altura((*parv)->esq), altura((*parv)->dir)) + 1;
             _avl_rebalancear(parv);
         }
     }
@@ -211,4 +211,25 @@ tnode *sucessor(tnode *node) {
         }
         return parent;
     }
+}
+
+// função para facilitar a vizualização da arvore já que eu estava tendo problemas durante um teste
+void printAVL(tnode *parv, int level) {
+
+    if (parv == NULL)
+        return;
+
+    printAVL(parv->dir, level + 1);
+    printf("\n");
+
+    for (int i = 0; i < level; i++)
+        printf("\t");
+
+    LinkedList *current = parv->items;
+    while (current != NULL) {
+        printf("%d ", *(int*)(current->item));
+        current = current->prox;
+    }
+    printf("\n");
+    printAVL(parv->esq, level + 1);
 }

@@ -6,20 +6,19 @@
 #include "municipio.h"
 #include "avl.h"
 
+int comparator(titem item1, titem item2) {
+    return item1 - item2;
+}
+
 void test_file() {
-
     char *file = readFile("municipios.min.json");
-
     assert(file != NULL);
     free(file);
-
 }
 
 void test_json() {
-
     json_error_t error;
     json_t *root = NULL;
-
     char *jsonString = readFile("municipios.min.json");
     
     root = json_loads(jsonString, 0, &error);
@@ -30,7 +29,6 @@ void test_json() {
     assert(json_array_size(root) == 5570);
 
     json_t *city = json_array_get(root, 0);
-
     assert(city != NULL);
     assert(json_integer_value(json_object_get(city, "codigo_ibge")) == 5200050);
     assert(json_real_value(json_object_get(city, "latitude")) == -16.7573);
@@ -43,14 +41,11 @@ void test_json() {
     assert(strcmp(json_string_value(json_object_get(city, "fuso_horario")), "America/Sao_Paulo") == 0);
 
     json_decref(root);
-
 }
 
 void test_municipio() {
-
     json_error_t error;
     json_t *root = NULL;
-
     char *jsonString = readFile("municipios.min.json");
     
     root = json_loads(jsonString, 0, &error);
@@ -86,15 +81,18 @@ void test_municipio() {
 
     char distance[9];
     sprintf(distance, "%.6f", distanceMunicipios(municipio1, municipio2));
-
     assert(strcmp(distance, "10.901111") == 0);
 
     destroyMunicipio(municipio1);
     destroyMunicipio(municipio2);
-
 }
 
 void test_rotacao() {
+    int v5 = 5;
+    int v10 = 10;
+    int v3 = 3;
+    int v7 = 7;
+    int v12 = 12;
     tnode *x;
     tnode *y;
     tnode *a;
@@ -113,132 +111,146 @@ void test_rotacao() {
     a->items = malloc(sizeof(LinkedList));
     b->items = malloc(sizeof(LinkedList));
     c->items = malloc(sizeof(LinkedList));
-    x->items->item = 5;
-    y->items->item = 10;
-    a->items->item = 3;
-    b->items->item = 7;
-    c->items->item = 12;
+    x->items->item = &v5;
+    y->items->item = &v10;
+    a->items->item = &v3;
+    b->items->item = &v7;
+    c->items->item = &v12;
     x->esq = a;
     x->dir = b;
     y->esq = x;
     y->dir = c;
     arv = y;
     _rd(&arv);
-    assert(arv->items->item == 5);
-    assert(arv->esq->items->item == 3);
-    assert(arv->dir->items->item == 10);
-    assert(arv->dir->dir->items->item == 12);
-    assert(arv->dir->esq->items->item == 7);
+    assert(*(int*)(arv->items->item) == 5);
+    assert(*(int*)(arv->esq->items->item) == 3);
+    assert(*(int*)(arv->dir->items->item) == 10);
+    assert(*(int*)(arv->dir->dir->items->item) == 12);
+    assert(*(int*)(arv->dir->esq->items->item) == 7);
     _re(&arv);
-    assert(arv->items->item == 10);
-    assert(arv->esq->items->item == 5);
-    assert(arv->dir->items->item == 12);
-    assert(arv->esq->dir->items->item == 7);
-    assert(arv->esq->esq->items->item == 3);
+    assert(*(int*)(arv->items->item) == 10);
+    assert(*(int*)(arv->esq->items->item) == 5);
+    assert(*(int*)(arv->dir->items->item) == 12);
+    assert(*(int*)(arv->esq->dir->items->item) == 7);
+    assert(*(int*)(arv->esq->esq->items->item)== 3);
 
     avl_destroi(arv);
 }
 
 void test_insere() {
+    int v10 = 10;
+    int v15 = 15;
+    int v20 = 20;
+    int v50 = 50;
+    int v23 = 23;
+    int v30 = 30;
+    int v5 = 5;
+    int v7 = 7;
+    int v25 = 25;
     tnode *arv;
     arv = NULL;
     assert(arv == NULL);
     
-    avl_insere(&arv, 10);    
-    avl_insere(&arv, 15);
-    avl_insere(&arv, 20);
-    assert(arv->items->item == 15);
-    assert(arv->esq->items->item == 10);
-    assert(arv->dir->items->item == 20);
+    avl_insere(&arv, &v10, comparator);    
+    avl_insere(&arv, &v15, comparator);
+    avl_insere(&arv, &v20, comparator);
+    assert((int*)(arv->items->item) == &v15);
+    assert((int*)(arv->esq->items->item) == &v10);
+    assert((int*)(arv->dir->items->item) == &v20);
 
-    avl_insere(&arv, 50);
-    avl_insere(&arv, 23);
-    assert(arv->items->item == 15);
-    assert(arv->esq->items->item == 10);
-    assert(arv->dir->items->item == 23);
-    assert(arv->dir->esq->items->item == 20);
-    assert(arv->dir->dir->items->item == 50);
+    avl_insere(&arv, &v50, comparator);
+    avl_insere(&arv, &v23, comparator);
+    assert((int*)(arv->items->item) == &v15);
+    assert((int*)(arv->esq->items->item) == &v10);
+    assert((int*)(arv->dir->items->item) == &v23);
+    assert((int*)(arv->dir->esq->items->item) == &v20);
+    assert((int*)(arv->dir->dir->items->item) == &v50);
 
-    avl_insere(&arv, 5);
-    avl_insere(&arv, 30);
-    avl_insere(&arv, 25);
-    assert(arv->items->item == 15);
-    assert(arv->esq->items->item == 10);
-    assert(arv->esq->esq->items->item == 5);
-    assert(arv->dir->items->item == 23);
-    assert(arv->dir->esq->items->item == 20);
-    assert(arv->dir->dir->items->item == 30);
-    assert(arv->dir->dir->esq->items->item == 25);
-    assert(arv->dir->dir->dir->items->item == 50);
+    avl_insere(&arv, &v5, comparator);
+    avl_insere(&arv, &v30, comparator);
+    avl_insere(&arv, &v25, comparator);
+    assert((int*)(arv->items->item) == &v15);
+    assert((int*)(arv->esq->items->item) == &v10);
+    assert((int*)(arv->esq->esq->items->item )== &v5);
+    assert((int*)(arv->dir->items->item) == &v23);
+    assert((int*)(arv->dir->esq->items->item) == &v20);
+    assert((int*)(arv->dir->dir->items->item) == &v30);
+    assert((int*)(arv->dir->dir->esq->items->item) == &v25);
+    assert((int*)(arv->dir->dir->dir->items->item) == &v50);
 
-    avl_insere(&arv, 7);
-    assert(arv->items->item == 15);
-    assert(arv->esq->items->item == 7);
-    assert(arv->esq->esq->items->item == 5);
-    assert(arv->esq->dir->items->item == 10);
-    assert(arv->dir->items->item == 23);
-    assert(arv->dir->esq->items->item == 20);
-    assert(arv->dir->dir->items->item == 30);
-    assert(arv->dir->dir->dir->items->item == 50);
-    assert(arv->dir->dir->esq->items->item == 25);
+    avl_insere(&arv, &v7, comparator);
+    assert((int*)(arv->items->item) == &v15);
+    assert((int*)(arv->esq->items->item) == &v7);
+    assert((int*)(arv->esq->esq->items->item )== &v5);
+    assert((int*)(arv->esq->dir->items->item) == &v10);
+    assert((int*)(arv->dir->items->item) == &v23);
+    assert((int*)(arv->dir->esq->items->item) == &v20);
+    assert((int*)(arv->dir->dir->items->item) == &v30);
+    assert((int*)(arv->dir->dir->dir->items->item) == &v50);
+    assert((int*)(arv->dir->dir->esq->items->item) == &v25);
 
     avl_destroi(arv);
 }
 
 void test_remove() {
+    int v10 = 10;
+    int v15 = 15;
+    int v20 = 20;
+    int v50 = 50;
+    int v23 = 23;
+    int v30 = 30;
+    int v5 = 5;
+    int v25 = 25;
     tnode *arv;
     arv = NULL;
     assert(arv == NULL);
-    avl_insere(&arv, 10);    
-    avl_insere(&arv, 15);
-    avl_insere(&arv, 20);
-    avl_insere(&arv, 50);
-    avl_insere(&arv, 23);
-    avl_insere(&arv, 5);
-    avl_insere(&arv, 30);
-    avl_insere(&arv, 25);
+    avl_insere(&arv, &v10, comparator);    
+    avl_insere(&arv, &v15, comparator);
+    avl_insere(&arv, &v20, comparator);
+    avl_insere(&arv, &v50, comparator);
+    avl_insere(&arv, &v23, comparator);
+    avl_insere(&arv, &v5, comparator);
+    avl_insere(&arv, &v30, comparator);
+    avl_insere(&arv, &v25, comparator);
     
-    avl_remove(&arv, 15);
-    assert(arv->items->item == 20);
-    assert(arv->dir->items->item == 30);
-    assert(arv->esq->items->item == 10);
+    avl_remove(&arv, &v15, comparator);
+    assert((int*)(arv->items->item) == &v20);
+    assert((int*)(arv->dir->items->item) == &v30);
+    assert((int*)(arv->esq->items->item) == &v10);
     
-    assert(arv->esq->esq->items->item == 5);
+    assert((int*)(arv->esq->esq->items->item )== &v5);
 
-    assert(arv->dir->dir->items->item == 50);
-    assert(arv->dir->esq->items->item == 23);
-    assert(arv->dir->esq->dir->items->item == 25);
+    assert((int*)(arv->dir->dir->items->item) == &v50);
+    assert((int*)(arv->dir->esq->items->item) == &v23);
+    assert(arv->dir->esq->dir->items->item == &v25);
 
-    avl_remove(&arv, 20);
-    assert(arv->items->item == 23);
-    assert(arv->dir->items->item == 30);
-    assert(arv->esq->items->item == 10);
+    avl_remove(&arv, &v20, comparator);
+    assert((int*)(arv->items->item) == &v23);
+    assert((int*)(arv->dir->items->item) == &v30);
+    assert((int*)(arv->esq->items->item) == &v10);
     
-    assert(arv->esq->esq->items->item == 5);
+    assert((int*)(arv->esq->esq->items->item )== &v5);
 
-    assert(arv->dir->dir->items->item == 50);
-    assert(arv->dir->esq->items->item == 25);
+    assert((int*)(arv->dir->dir->items->item) == &v50);
+    assert((int*)(arv->dir->esq->items->item) == &v25);
 
-    avl_remove(&arv, 10);
-    assert(arv->items->item == 23);
-    assert(arv->dir->items->item == 30);
-    assert(arv->esq->items->item == 5);
-    assert(arv->dir->dir->items->item == 50);
-    assert(arv->dir->esq->items->item == 25);
+    avl_remove(&arv, &v10, comparator);
+    assert((int*)(arv->items->item) == &v23);
+    assert((int*)(arv->dir->items->item) == &v30);
+    assert((int*)(arv->esq->items->item) == &v5);
+    assert((int*)(arv->dir->dir->items->item) == &v50);
+    assert((int*)(arv->dir->esq->items->item) == &v25);
 
     avl_destroi(arv);
 }
 
 void test_avl() {
-
     test_insere();
     test_remove(); 
     test_rotacao();
-
 }
 
 int main() {
-
     test_file();
     test_json();
     test_municipio();

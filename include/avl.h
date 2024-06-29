@@ -6,7 +6,9 @@
 #ifndef __AVL__
 #define  __AVL__
 
-typedef int titem;
+typedef void* titem;
+
+typedef int (*Comparator)(titem, titem);
 
 typedef struct lnode {
     titem item;
@@ -21,8 +23,8 @@ typedef struct _node{
     int h;
 }tnode;
 
-void avl_insere(tnode ** parv,titem reg);
-void avl_remove(tnode ** parv,titem reg);
+void avl_insere(tnode ** parv,titem reg, Comparator comp);
+void avl_remove(tnode ** parv,titem reg, Comparator comp);
 void avl_destroi(tnode * parv);
 
 void _rd(tnode ** pparv);
@@ -33,5 +35,7 @@ void addItem(tnode *no, titem item);
 tnode *createNode(titem item);
 
 tnode *sucessor(tnode *node);
+
+void printAVL(tnode *parv, int level);
 
 #endif
