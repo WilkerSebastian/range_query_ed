@@ -22,12 +22,12 @@ int altura(tnode *arv){
 }
 
 // função para inserir um item na arvore
-void addItem(tnode *no, titem item) {
+void addItem(tnode *node, titem item) {
 
     LinkedList *newItem = (LinkedList *)malloc(sizeof(LinkedList));
     newItem->item = item;
-    newItem->prox = no->items;
-    no->items = newItem;
+    newItem->prox = node->items;
+    node->items = newItem;
 
 }
 
