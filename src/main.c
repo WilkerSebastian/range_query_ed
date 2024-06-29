@@ -7,12 +7,26 @@
 
 int main() {
 
+    uint32_t loadMunicipios(Municipio **municipios);
+
+    Municipio **municipios = NULL;
+
+    uint32_t size = loadMunicipios(municipios);    
+
+
+    for (size_t i = 0;i < size;i++)
+        destroyMunicipio(*(municipios + i));
+    
+    return EXIT_SUCCESS;
+}
+
+// função para carregar o dados num vetor de municipios, ela retorna o tamanho do vetor
+uint32_t loadMunicipios(Municipio **municipios) {
+
     uint32_t size_json;
 
     json_error_t error;
     json_t *root = NULL;
-
-    Municipio **municipios = NULL;
 
     char *jsonString = readFile("municipios.min.json");
 
@@ -43,8 +57,6 @@ int main() {
 
     json_decref(root);
 
-    for (size_t i = 0;i < size_json;i++)
-        destroyMunicipio(*(municipios + i));
-    
-    return EXIT_SUCCESS;
+    return size_json;
+
 }
