@@ -24,7 +24,6 @@ typedef struct _node{
 }tnode;
 
 void avl_insere(tnode ** parv,titem reg, Comparator comparator);
-void avl_remove(tnode ** parv,titem reg, Comparator comparator);
 void avl_destroi(tnode * parv);
 
 void _rd(tnode ** pparv);

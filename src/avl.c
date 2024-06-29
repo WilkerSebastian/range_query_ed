@@ -141,34 +141,6 @@ void _avl_rebalancear(tnode **parv){
     }
 }
 
-void avl_remove(tnode **parv, titem item, Comparator comparator) {
-    if (*parv != NULL) {
-        int cmp = (*comparator)((*parv)->items->item, item);
-        if (cmp > 0) {
-            avl_remove(&((*parv)->esq), item, comparator);
-        } else if (cmp < 0) {
-            avl_remove(&((*parv)->dir), item, comparator);
-        } else {
-            if ((*parv)->esq == NULL && (*parv)->dir == NULL) {
-                avl_destroi(*parv);
-                *parv = NULL;
-            } else if ((*parv)->esq == NULL || (*parv)->dir == NULL) {
-                tnode *aux = *parv;
-                *parv = (*parv)->esq ? (*parv)->esq : (*parv)->dir;
-                avl_destroi(aux);
-            } else {
-                tnode **s = sucessor(&(*parv)->dir);
-                (*parv)->items = (*s)->items;
-                avl_remove(&(*parv)->dir, (*s)->items->item, comparator);
-            }
-        }
-        if (*parv != NULL) {
-            (*parv)->h = max(altura((*parv)->esq), altura((*parv)->dir)) + 1;
-            _avl_rebalancear(parv);
-        }
-    }
-}
-
 void avl_destroi(tnode *parv){
     if (parv != NULL) {
         avl_destroi(parv->esq);
