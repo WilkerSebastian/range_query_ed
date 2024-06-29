@@ -23,8 +23,8 @@ typedef struct _node{
     int h;
 }tnode;
 
-void avl_insere(tnode ** parv,titem reg, Comparator comp);
-void avl_remove(tnode ** parv,titem reg, Comparator comp);
+void avl_insere(tnode ** parv,titem reg, Comparator comparator);
+void avl_remove(tnode ** parv,titem reg, Comparator comparator);
 void avl_destroi(tnode * parv);
 
 void _rd(tnode ** pparv);
@@ -34,8 +34,8 @@ void _avl_rebalancear(tnode ** pparv);
 void addItem(tnode *no, titem item);
 tnode *createNode(titem item);
 
-tnode *sucessor(tnode *node);
+tnode ** sucessor(tnode **parv);
 
-void printAVL(tnode *parv, int level);
+void printAVL(tnode *node, int level);
 
 #endif
