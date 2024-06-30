@@ -2,53 +2,24 @@
 #include <stdlib.h>
 #include <jansson.h>
 
+#define NOME 1
+#define LATITUDE 2
+#define LONGITUDE 3
+#define CODIGO_UF 4
+#define DDD 5
+
+#include "comparators.h"
+#include "hash.h"
 #include "file.h"
 #include "municipio.h"
+#include "avl.h"
 #include "ui.h"
 
 int main() {
 
-    uint32_t loadMunicipios(Municipio **municipios);
+    void loadAvls(tnode *avl, Municipio **municipios, uint32_t size, Comparator comparator, int TYPE);
 
     Municipio **municipios = NULL;
-
-    uint32_t size = loadMunicipios(municipios);    
-
-    int8_t op;
-
-    do {
-
-        op = main_menu();
-
-        if (op == QUERY) {
-
-            Query *query = query_menu();
-
-            if (query == NULL) 
-                printf("query informada incorretamente\n");
-
-            else {
-
-                
-
-            }
-
-            free(query);
-
-        }
-
-        printf("\n\n\n");
-
-    } while (op != EXIT);
-
-    for (size_t i = 0;i < size;i++)
-        destroyMunicipio(*(municipios + i));
-    
-    return EXIT_SUCCESS;
-}
-
-// função para carregar o dados num vetor de municipios, ela retorna o tamanho do vetor
-uint32_t loadMunicipios(Municipio **municipios) {
 
     uint32_t size_json;
 
@@ -82,8 +53,96 @@ uint32_t loadMunicipios(Municipio **municipios) {
 
     }
 
+    if (municipios == NULL) {
+        printf("Erro ao criar os municipios\n");
+        return EXIT_FAILURE;
+    }
+
     json_decref(root);
 
-    return size_json;
+    Hashtable *hashTable = createHashTableMunicipio(municipios, size_json, size_json);
 
+    tnode ** avls = (tnode**)calloc(5, sizeof(tnode*));
+
+    loadAvls(*avls, municipios, size_json, comparatorString, NOME);
+    loadAvls(*(avls + 1), municipios, size_json, comparatorDobule, LATITUDE);
+    loadAvls(*(avls + 2), municipios, size_json, comparatorDobule, LONGITUDE);
+    loadAvls(*(avls + 3), municipios, size_json, comparatorSmallUnsignedInteger, DDD);
+    loadAvls(*(avls + 4), municipios, size_json, comparatorSmallUnsignedInteger, CODIGO_UF);
+
+    int8_t op;
+
+    do {
+
+        op = main_menu();
+
+        if (op == QUERY) {
+
+            Query *query = query_menu();
+
+            if (query == NULL) 
+                printf("query informada incorretamente\n");
+
+            else {
+
+                
+
+            }
+
+            free(query);
+
+        }
+
+        printf("\n\n\n");
+
+    } while (op != EXIT);
+
+    for (size_t i = 0;i < size_json;i++)
+        destroyMunicipio(*(municipios + i));
+    
+    return EXIT_SUCCESS;
 }
+
+void loadAvls(tnode *avl, Municipio **municipios, uint32_t size, Comparator comparator, int TYPE) {
+
+    for (size_t i = 0; i < size; i++) {
+
+        Municipio *m = *(municipios + i);
+
+        if (*(municipios + i) != NULL) {
+
+            switch (TYPE) {
+
+                case NOME:
+
+                    avl_insere(&avl, m->nome, &m->codigo_ibge, comparator);
+                    break;
+                
+                case LATITUDE:
+
+                    avl_insere(&avl, &m->latitude, &m->codigo_ibge, comparator);
+                    break;
+                
+                case LONGITUDE:
+
+                    avl_insere(&avl, &m->longitude, &m->codigo_ibge, comparator);
+                    break;
+                
+                case CODIGO_UF:
+
+                    avl_insere(&avl, &m->codigo_uf, &m->codigo_ibge, comparator);
+                    break;
+                
+                case DDD:
+
+                    avl_insere(&avl, &m->ddd, &m->codigo_ibge, comparator);
+                    break;
+            }
+
+        } else 
+            printf("Erro ao acessar o municipio\n");
+        
+
+    }
+
+} 
