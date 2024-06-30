@@ -4,6 +4,7 @@
 
 #include "file.h"
 #include "municipio.h"
+#include "ui.h"
 
 int main() {
 
@@ -13,6 +14,19 @@ int main() {
 
     uint32_t size = loadMunicipios(municipios);    
 
+    int8_t op;
+
+    do {
+
+        op = main_menu();
+
+        if (op == QUERY) {
+
+            
+
+        }
+
+    } while (op != EXIT);
 
     for (size_t i = 0;i < size;i++)
         destroyMunicipio(*(municipios + i));
