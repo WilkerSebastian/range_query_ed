@@ -88,12 +88,12 @@ int main() {
                 
                 case CODIGO_UF:
 
-                    avl_insere(&*(avls + 3), &m->codigo_uf, &m->codigo_ibge, comparatorUnsignedInteger);
+                    avl_insere(&*(avls + 3), &m->codigo_uf, &m->codigo_ibge, comparatorSmallUnsignedInteger);
                     break;
                 
                 case DDD:
 
-                    avl_insere(&*(avls + 4), &m->ddd, &m->codigo_ibge, comparatorUnsignedInteger);
+                    avl_insere(&*(avls + 4), &m->ddd, &m->codigo_ibge, comparatorSmallUnsignedInteger);
                     break;
             }
 
@@ -113,21 +113,8 @@ int main() {
                 printf("query informada incorretamente\n");
 
             else {
+                
 
-                printf("Busca %d %d\n", *query->minNome, *query->maxNome);
-
-                printAVL(*(avls + 3), 0);
-
-                uint32_t size = 0;
-                uint32_t *results = searchRange(*avls, query->minNome, query->maxNome, comparatorDobule, &size);
-
-                if (results == NULL) 
-                    printf("Nenhum resultado encontrado\n");
-                else 
-                    for (size_t i = 0; i < size; i++)
-                        printf("%d\n", results[i]);
-
-                free(results);
 
             }
 

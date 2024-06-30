@@ -1,6 +1,7 @@
 #include "ui.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int8_t main_menu() {
 
@@ -41,10 +42,10 @@ Query *query_menu() {
 
     if (op == YES) { 
 
-        void **array = min_max("nome", INT);
+        void **array = min_max("nome", STRING);
 
-        query->minNome = (uint32_t*)(*array);
-        query->maxNome = (uint32_t*)(*(array + 1));
+        query->minNome = (char*)(*array);
+        query->maxNome = (char*)(*(array + 1));
 
         free(array);
 
@@ -81,10 +82,10 @@ Query *query_menu() {
 
     if (op == YES) {
 
-        void **array = min_max("codigo_uf", INT);
+        void **array = min_max("codigo_uf", SMALL_INT);
 
-        query->minCodigo_uf = (uint32_t*)(*array);
-        query->maxCodigo_uf = (uint32_t*)(*(array + 1));
+        query->minCodigo_uf = (uint8_t*)(*array);
+        query->maxCodigo_uf = (uint8_t*)(*(array + 1));
 
         free(array);
 
@@ -94,10 +95,10 @@ Query *query_menu() {
 
     if (op == YES) {
 
-        void **array = min_max("ddd", INT);
+        void **array = min_max("ddd", SMALL_INT);
 
-        query->minDdd = (uint32_t*)(*array);
-        query->maxDdd = (uint32_t*)(*(array + 1));
+        query->minDdd = (uint8_t*)(*array);
+        query->maxDdd = (uint8_t*)(*(array + 1));
 
         free(array);
 
@@ -134,21 +135,91 @@ void** min_max(const char *name, int8_t TYPE) {
 
     void **array = malloc(2 * sizeof(void*));
 
-    min = malloc(TYPE == INT ? sizeof(uint32_t) : sizeof(double));
-    max = malloc(TYPE == INT ? sizeof(uint32_t) : sizeof(double));
-
-    printf("Qual valor minimo que deseja que %s tenha na sua query: ", name);
-    TYPE == INT ? scanf("%d", (uint32_t*)min) : scanf("%lf", (double*)min);
-
-    printf("Qual valor maximo que deseja que %s tenha na sua query: ", name);
-    TYPE == INT ? scanf("%d", (uint32_t*)max) : scanf("%lf", (double*)max);
+    switch (TYPE) {
     
+        case SMALL_INT:
+
+            min = (uint8_t*)malloc(sizeof(uint8_t));
+
+            max = (uint8_t*)malloc(sizeof(uint8_t));
+
+            printf("Qual valor minimo que deseja que %s tenha na sua query: ", name);
+            scanf("%hhd", (uint8_t*)min);
+
+            printf("Qual valor maximo que deseja que %s tenha na sua query: ", name);
+            scanf("%hhd", (uint8_t*)max);
+
+            break;
+        case FLOAT:
+
+            min = (double*)malloc(sizeof(double));
+
+            max = (double*)malloc(sizeof(double));
+
+            printf("Qual valor minimo que deseja que %s tenha na sua query: ", name);
+            scanf("%lf", (double*)min);
+
+            printf("Qual valor maximo que deseja que %s tenha na sua query: ", name);
+            scanf("%lf", (double*)max);
+
+            break;
+        case STRING:
+
+            getchar();
+            printf("Qual valor minimo que deseja que %s tenha na sua query: ", name);
+            min = readLine();
+
+            printf("Qual valor maximo que deseja que %s tenha na sua query: ", name);
+            max = readLine();
+
+            break;
+    
+    }
+
     *array = min;
     *(array + 1) = max;
 
     printf("\n");
 
     return array;
+
+}
+
+// Função para ler a string de entrada com tamanho dinamico
+char* readLine() {
+
+    char *buffer = NULL;  
+    size_t buffer_size = 0;  
+    size_t length = 0; 
+
+    buffer_size = 16;
+    buffer = (char*)malloc(buffer_size * sizeof(char));
+
+    if (buffer == NULL)
+        return buffer;
+
+    char ch;
+
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+        
+        if (length >= buffer_size) {
+
+            buffer_size *= 2;
+
+            buffer = (char*)realloc(buffer, buffer_size * sizeof(char));
+
+            if (buffer == NULL)
+                return NULL;
+            
+        }
+
+        buffer[length++] = ch;
+
+    }
+
+    *(buffer + length) = '\0';
+
+    return buffer;
 
 }
 

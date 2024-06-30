@@ -1,6 +1,6 @@
 #include "query.h"
 
-Municipio *query(Query requires) {
+uint32_t *query(Query requires) {
 
     
 
