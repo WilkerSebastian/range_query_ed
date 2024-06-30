@@ -22,9 +22,20 @@ int main() {
 
         if (op == QUERY) {
 
-            
+            Query *query = query_menu();
+
+            if (query == NULL) 
+                printf("query informada incorretamente\n");
+
+            else {
+
+
+
+            }
 
         }
+
+        printf("\n\n\n");
 
     } while (op != EXIT);
 

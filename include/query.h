@@ -3,15 +3,16 @@
 #include "municipio.h"
 
 typedef struct {
-    char *nome;
-    double minLatitude;
-    double maxLatitude;
-    double minLongitude;
-    double maxLongitude;
-    double minCodigo_uf;
-    double maxCodigo_uf;
-    uint8_t minDdd;
-    uint8_t maxDdd;
+    uint32_t *minNome;
+    uint32_t *maxNome;
+    double *minLatitude;
+    double *maxLatitude;
+    double *minLongitude;
+    double *maxLongitude;
+    uint32_t *minCodigo_uf;
+    uint32_t *maxCodigo_uf;
+    uint32_t *minDdd;
+    uint32_t *maxDdd;
 } Query;
 
 Municipio *query(Query requires);
