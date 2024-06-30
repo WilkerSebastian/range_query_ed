@@ -5,6 +5,7 @@
 #include "file.h"
 #include "municipio.h"
 #include "avl.h"
+#include "hash.h"
 
 int comparator(titem item1, titem item2) {
     return (*(int *)item1) - (*(int *)item2);
@@ -87,6 +88,34 @@ void test_municipio() {
     destroyMunicipio(municipio2);
 }
 
+void test_hash() {
+
+    json_error_t error;
+    json_t *root = NULL;
+    char *jsonString = readFile("municipios.min.json");
+    
+    root = json_loads(jsonString, 0, &error);
+    free(jsonString);
+
+    Municipio **municipios = calloc(json_array_size(root), sizeof(Municipio*));
+    *municipios  = createMunicipioFromJson(json_array_get(root, 0));
+    *(municipios + 1) = createMunicipioFromJson(json_array_get(root, 5569));
+
+    json_decref(root);
+
+    Hashtable *hashTable = createHashTableMunicipio(municipios, 2, 2);
+
+    assert(hashTable != NULL);
+    assert(hashTable->length == 2);
+    assert(hashTable->max == 2);
+
+    assert(getValueByKey(hashTable, 5200050) != NULL);
+    assert(getValueByKey(hashTable, 4219853) != NULL);
+
+    destroyHashTable(hashTable);
+
+}
+
 void test_insere() {
     int v10 = 10;
     int v15 = 15;
@@ -142,67 +171,12 @@ void test_insere() {
     avl_destroi(arv);
 }
 
-void test_rotacao() {
-    int v5 = 5;
-    int v10 = 10;
-    int v3 = 3;
-    int v7 = 7;
-    int v12 = 12;
-    tnode *x;
-    tnode *y;
-    tnode *a;
-    tnode *b;
-    tnode *c;
-    tnode *arv;
-    arv = NULL;
-    assert(arv == NULL);
-    x = malloc(sizeof(tnode));
-    y = malloc(sizeof(tnode));
-    a = malloc(sizeof(tnode));
-    b = malloc(sizeof(tnode));
-    c = malloc(sizeof(tnode));
-    x->items = malloc(sizeof(LinkedList));
-    y->items = malloc(sizeof(LinkedList));
-    a->items = malloc(sizeof(LinkedList));
-    b->items = malloc(sizeof(LinkedList));
-    c->items = malloc(sizeof(LinkedList));
-    x->items->item = &v5;
-    y->items->item = &v10;
-    a->items->item = &v3;
-    b->items->item = &v7;
-    c->items->item = &v12;
-    x->esq = a;
-    x->dir = b;
-    y->esq = x;
-    y->dir = c;
-    arv = y;
-    _rd(&arv);
-    assert(*(int*)(arv->items->item) == 5);
-    assert(*(int*)(arv->esq->items->item) == 3);
-    assert(*(int*)(arv->dir->items->item) == 10);
-    assert(*(int*)(arv->dir->dir->items->item) == 12);
-    assert(*(int*)(arv->dir->esq->items->item) == 7);
-    _re(&arv);
-    assert(*(int*)(arv->items->item) == 10);
-    assert(*(int*)(arv->esq->items->item) == 5);
-    assert(*(int*)(arv->dir->items->item) == 12);
-    assert(*(int*)(arv->esq->dir->items->item) == 7);
-    assert(*(int*)(arv->esq->esq->items->item) == 3);
-
-    avl_destroi(arv);
-}
-
-void test_avl() {
-    test_insere();
-    test_remove(); 
-    test_rotacao();
-}
-
 int main() {
     test_file();
     test_json();
     test_municipio();
-    test_avl();
+    test_hash();
+    test_insere();
 
     return EXIT_SUCCESS;
 }
