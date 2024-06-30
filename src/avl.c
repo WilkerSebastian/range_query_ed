@@ -4,6 +4,7 @@
 
 */
 #include<stdio.h>
+#include<stdint.h>
 #include<stdlib.h>
 #include"avl.h"
 
@@ -22,21 +23,22 @@ int altura(tnode *arv){
 }
 
 // função para inserir um item na arvore
-void addItem(tnode *node, titem item) {
+void addItem(tnode *node, titem item, uint32_t *codigo_ibge) {
 
     LinkedList *nodeList = (LinkedList*)malloc(sizeof(LinkedList));
     nodeList->item = item;
     nodeList->prox = node->items;
+    nodeList->codigo_ibge = codigo_ibge;
     node->items = nodeList;
   
 }
 
 // função para criar um novo nó que para avl
-tnode *createNode(titem item) {
+tnode *createNode(titem item, uint32_t *codigo_ibge) {
 
     tnode *node = (tnode *)malloc(sizeof(tnode));
     node->items = NULL;
-    addItem(node, item);
+    addItem(node, item, codigo_ibge);
     node->esq = NULL;
     node->dir = NULL;
     node->father = NULL;
@@ -46,27 +48,27 @@ tnode *createNode(titem item) {
 
 }
 
-void avl_insere(tnode ** parv,titem item, Comparator comparator){
+void avl_insere(tnode ** parv,titem item, uint32_t *codigo_ibge, Comparator comparator){
 
     if (*parv == NULL)
-        *parv = createNode(item);
+        *parv = createNode(item, codigo_ibge);
 
     else if ((*comparator)((*parv)->items->item, item) > 0) {
 
-        avl_insere(&(*parv)->esq, item, comparator);
+        avl_insere(&(*parv)->esq, item, codigo_ibge, comparator);
 
         if ((*parv)->esq != NULL) 
             (*parv)->esq->father = *parv;
 
     } else if ((*comparator)((*parv)->items->item, item) < 0) {
 
-        avl_insere(&(*parv)->dir, item, comparator);
+        avl_insere(&(*parv)->dir, item, codigo_ibge, comparator);
 
          if ((*parv)->dir != NULL) 
             (*parv)->dir->father = *parv;
 
     } else
-        addItem(*parv, item);
+        addItem(*parv, item, codigo_ibge);
     
     (*parv)->h = max(altura((*parv)->esq), altura((*parv)->dir)) + 1;
     _avl_rebalancear(parv);

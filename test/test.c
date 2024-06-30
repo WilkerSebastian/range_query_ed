@@ -117,6 +117,7 @@ void test_hash() {
 }
 
 void test_insere() {
+    uint32_t cod = 0;
     int v10 = 10;
     int v15 = 15;
     int v20 = 20;
@@ -130,24 +131,24 @@ void test_insere() {
     arv = NULL;
     assert(arv == NULL);
     
-    avl_insere(&arv, &v10, comparator);    
-    avl_insere(&arv, &v15, comparator);
-    avl_insere(&arv, &v20, comparator);
+    avl_insere(&arv, &v10, &cod, comparator);    
+    avl_insere(&arv, &v15, &cod, comparator);
+    avl_insere(&arv, &v20, &cod, comparator);
     assert(*(int*)(arv->items->item) == 15);
     assert(*(int*)(arv->esq->items->item) == 10);
     assert(*(int*)(arv->dir->items->item) == 20);
 
-    avl_insere(&arv, &v50, comparator);
-    avl_insere(&arv, &v23, comparator);
+    avl_insere(&arv, &v50, &cod, comparator);
+    avl_insere(&arv, &v23, &cod, comparator);
     assert(*(int*)(arv->items->item) == 15);
     assert(*(int*)(arv->esq->items->item) == 10);
     assert(*(int*)(arv->dir->items->item) == 23);
     assert(*(int*)(arv->dir->esq->items->item) == 20);
     assert(*(int*)(arv->dir->dir->items->item) == 50);
 
-    avl_insere(&arv, &v5, comparator);
-    avl_insere(&arv, &v30, comparator);
-    avl_insere(&arv, &v25, comparator);
+    avl_insere(&arv, &v5, &cod, comparator);
+    avl_insere(&arv, &v30, &cod, comparator);
+    avl_insere(&arv, &v25, &cod, comparator);
     assert(*(int*)(arv->items->item) == 15);
     assert(*(int*)(arv->esq->items->item) == 10);
     assert(*(int*)(arv->esq->esq->items->item) == 5);
@@ -157,7 +158,7 @@ void test_insere() {
     assert(*(int*)(arv->dir->dir->esq->items->item) == 25);
     assert(*(int*)(arv->dir->dir->dir->items->item) == 50);
 
-    avl_insere(&arv, &v7, comparator);
+    avl_insere(&arv, &v7, &cod, comparator);
     assert(*(int*)(arv->items->item) == 15);
     assert(*(int*)(arv->esq->items->item) == 7);
     assert(*(int*)(arv->esq->esq->items->item) == 5);
