@@ -36,6 +36,9 @@ void _avl_rebalancear(tnode ** pparv);
 void addItem(tnode *no, titem item, uint32_t *codigo_ibge);
 tnode *createNode(titem item, uint32_t *codigo_ibge);
 
+uint32_t *searchRange(tnode *parv, titem minItem, titem maxItem, Comparator comparator, uint32_t *resultSize);
+void collectRange(tnode *parv, titem minItem, titem maxItem, Comparator comparator, uint32_t **results, uint32_t *size, uint32_t *capacity);
+
 tnode ** sucessor(tnode **parv);
 
 void printAVL(tnode *node, int level);

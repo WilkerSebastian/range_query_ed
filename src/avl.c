@@ -203,3 +203,53 @@ void printAVL(tnode *parv, int level) {
     printf("\n");
     printAVL(parv->esq, level + 1);
 }
+
+// Função para coletar valores dentros do intervalo
+void collectRange(tnode *parv, titem minItem, titem maxItem, Comparator comparator, uint32_t **results, uint32_t *size, uint32_t *capacity) {
+
+    if (parv == NULL) 
+        return;
+
+    // se o item dentro do intervalo, adiciona-o na lista de resultados
+    if ((*comparator)(parv->items->item, minItem) >= 0 && (*comparator)(parv->items->item, maxItem) <= 0) {
+        
+        LinkedList *current = parv->items;
+
+        while (current != NULL) {
+
+            if (*size >= *capacity) {
+                *capacity *= 2;
+                *results = (uint32_t*)realloc(*results, *capacity * sizeof(uint32_t)); // usando realloc para mudar o tamanho de que ja foi alocado
+            }
+
+            (*results)[(*size)++] = *(current->codigo_ibge); // aumentando o tamanho da lista de resultados
+            current = current->prox;
+
+        }
+
+        // Continua a busca nos filhos esquerdo e direito
+        collectRange(parv->esq, minItem, maxItem, comparator, results, size, capacity);
+        collectRange(parv->dir, minItem, maxItem, comparator, results, size, capacity);
+
+    // se o item dentro do intervalo, continua a busca nos filhos a direito
+    } else if ((*comparator)(parv->items->item, minItem) < 0) 
+        collectRange(parv->dir, minItem, maxItem, comparator, results, size, capacity);
+
+    // se o item dentro do intervalo, continua a busca nos filhos a esquerda
+    else 
+        collectRange(parv->esq, minItem, maxItem, comparator, results, size, capacity);
+    
+}
+
+// função de busca por intervalo dentro da AVL
+uint32_t *searchRange(tnode *parv, titem minItem, titem maxItem, Comparator comparator, uint32_t *resultSize) {
+
+    uint32_t capacity = 10;
+    uint32_t *results = (uint32_t *)malloc(capacity * sizeof(uint32_t));
+    *resultSize = 0;
+
+    collectRange(parv, minItem, maxItem, comparator, &results, resultSize, &capacity);
+
+    return results;
+    
+}

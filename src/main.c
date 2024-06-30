@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <jansson.h>
 
-#define NOME 1
-#define LATITUDE 2
-#define LONGITUDE 3
-#define CODIGO_UF 4
-#define DDD 5
+#define NOME 0
+#define LATITUDE 1
+#define LONGITUDE 2
+#define CODIGO_UF 3
+#define DDD 4
 
 #include "comparators.h"
 #include "hash.h"
@@ -64,11 +64,40 @@ int main() {
 
     tnode ** avls = (tnode**)calloc(5, sizeof(tnode*));
 
-    loadAvls(*avls, municipios, size_json, comparatorString, NOME);
-    loadAvls(*(avls + 1), municipios, size_json, comparatorDobule, LATITUDE);
-    loadAvls(*(avls + 2), municipios, size_json, comparatorDobule, LONGITUDE);
-    loadAvls(*(avls + 3), municipios, size_json, comparatorSmallUnsignedInteger, DDD);
-    loadAvls(*(avls + 4), municipios, size_json, comparatorSmallUnsignedInteger, CODIGO_UF);
+    for (size_t i = 0; i < 5; i++)
+        for (size_t j = 0; j < size_json; j++) {
+
+            Municipio *m = *(municipios + j);
+
+            switch (i) {
+
+                case NOME:
+
+                    avl_insere(&*avls, m->nome, &m->codigo_ibge, comparatorString);
+                    break;
+                
+                case LATITUDE:
+
+                    avl_insere(&*(avls + 1), &m->latitude, &m->codigo_ibge, comparatorDobule);
+                    break;
+                
+                case LONGITUDE:
+
+                    avl_insere(&*(avls + 2), &m->longitude, &m->codigo_ibge, comparatorDobule);
+                    break;
+                
+                case CODIGO_UF:
+
+                    avl_insere(&*(avls + 3), &m->codigo_uf, &m->codigo_ibge, comparatorUnsignedInteger);
+                    break;
+                
+                case DDD:
+
+                    avl_insere(&*(avls + 4), &m->ddd, &m->codigo_ibge, comparatorUnsignedInteger);
+                    break;
+            }
+
+        };
 
     int8_t op;
 
@@ -85,7 +114,20 @@ int main() {
 
             else {
 
-                
+                printf("Busca %d %d\n", *query->minNome, *query->maxNome);
+
+                printAVL(*(avls + 3), 0);
+
+                uint32_t size = 0;
+                uint32_t *results = searchRange(*avls, query->minNome, query->maxNome, comparatorDobule, &size);
+
+                if (results == NULL) 
+                    printf("Nenhum resultado encontrado\n");
+                else 
+                    for (size_t i = 0; i < size; i++)
+                        printf("%d\n", results[i]);
+
+                free(results);
 
             }
 
@@ -102,47 +144,3 @@ int main() {
     
     return EXIT_SUCCESS;
 }
-
-void loadAvls(tnode *avl, Municipio **municipios, uint32_t size, Comparator comparator, int TYPE) {
-
-    for (size_t i = 0; i < size; i++) {
-
-        Municipio *m = *(municipios + i);
-
-        if (*(municipios + i) != NULL) {
-
-            switch (TYPE) {
-
-                case NOME:
-
-                    avl_insere(&avl, m->nome, &m->codigo_ibge, comparator);
-                    break;
-                
-                case LATITUDE:
-
-                    avl_insere(&avl, &m->latitude, &m->codigo_ibge, comparator);
-                    break;
-                
-                case LONGITUDE:
-
-                    avl_insere(&avl, &m->longitude, &m->codigo_ibge, comparator);
-                    break;
-                
-                case CODIGO_UF:
-
-                    avl_insere(&avl, &m->codigo_uf, &m->codigo_ibge, comparator);
-                    break;
-                
-                case DDD:
-
-                    avl_insere(&avl, &m->ddd, &m->codigo_ibge, comparator);
-                    break;
-            }
-
-        } else 
-            printf("Erro ao acessar o municipio\n");
-        
-
-    }
-
-} 
