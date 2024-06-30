@@ -48,11 +48,6 @@ tnode *createNode(titem item) {
 
 void avl_insere(tnode ** parv,titem item, Comparator comparator){
 
-    printAVL(*parv, 0);
-
-    if (*parv != NULL)
-        printf("Inserindo %d | %d | %d\n", *(int*)(item), *(int*)((*parv)->items->item) ,(*comparator)((*parv)->items->item, item));
-
     if (*parv == NULL)
         *parv = createNode(item);
 
