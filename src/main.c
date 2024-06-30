@@ -29,9 +29,11 @@ int main() {
 
             else {
 
-
+                
 
             }
+
+            free(query);
 
         }
 
