@@ -223,6 +223,18 @@ char* readLine() {
 
 }
 
+void printResult(Hashtable *table, uint32_t *result, uint32_t size) { 
+
+    for (uint32_t i = 0; i < size; i++) {
+
+        Municipio *m = getValueByKey(table, result[i]);
+
+        printMunicipio(m);
+
+    }
+
+}
+
 void clear() {
     
     #ifdef _WIN32

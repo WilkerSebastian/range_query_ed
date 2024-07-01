@@ -3,11 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 
-int comparatorUnsignedInteger(titem item1, titem item2) {
-    return (*(uint32_t*)item1) - (*(uint32_t*)item2);
-}
-
-int comparatorDobule(titem item1, titem item2) {
+int comparatorDouble(titem item1, titem item2) {
     return (*(double*)item1) - (*(double*)item2);
 }
 
@@ -17,4 +13,9 @@ int comparatorString(titem item1, titem item2) {
 
 int comparatorSmallUnsignedInteger(titem item1, titem item2) {
     return (*(uint8_t*)item1) - (*(uint8_t*)item2);
+}
+
+// esse vai ser usado para a função qsort
+int comparatorUnsignedInteger(const void *a, const void *b) {
+    return (*(uint32_t *)a - *(uint32_t *)b);
 }

@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "query.h"
+#include "hash.h"
 
 #define YES 1
 #define NO 0
@@ -22,5 +23,7 @@ int8_t insert_query(const char *name);
 void** min_max(const char *name, int8_t TYPE);
 
 char* readLine();
+
+void printResult(Hashtable *table, uint32_t *result, uint32_t size);
 
 void clear();

@@ -78,12 +78,12 @@ int main() {
                 
                 case LATITUDE:
 
-                    avl_insere(&*(avls + 1), &m->latitude, &m->codigo_ibge, comparatorDobule);
+                    avl_insere(&*(avls + 1), &m->latitude, &m->codigo_ibge, comparatorDouble);
                     break;
                 
                 case LONGITUDE:
 
-                    avl_insere(&*(avls + 2), &m->longitude, &m->codigo_ibge, comparatorDobule);
+                    avl_insere(&*(avls + 2), &m->longitude, &m->codigo_ibge, comparatorDouble);
                     break;
                 
                 case CODIGO_UF:
@@ -107,18 +107,28 @@ int main() {
 
         if (op == QUERY) {
 
-            Query *query = query_menu();
+            Query *q = query_menu();
 
-            if (query == NULL) 
+            if (q == NULL) 
                 printf("query informada incorretamente\n");
 
-            else {
-                
+            else if (q->minNome != NULL || q->maxNome != NULL || q->minLatitude != NULL || q->maxLatitude != NULL || q->minLongitude != NULL || q->maxLongitude != NULL || q->minCodigo_uf != NULL || q->maxCodigo_uf != NULL || q->minDdd != NULL || q->maxDdd != NULL) {
 
+                uint32_t size = 0;
+                
+                uint32_t *result = query(q, avls, &size);
+
+                if (result == NULL)
+                    printf("Nenhum resultado encontrado\n");
+                
+                else
+                    printResult(hashTable, result, size);
+
+                free(result);
 
             }
 
-            free(query);
+            free(q);
 
         }
 

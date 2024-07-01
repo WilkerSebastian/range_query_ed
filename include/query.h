@@ -16,4 +16,6 @@ typedef struct {
     uint8_t *maxDdd;
 } Query;
 
-uint32_t *query(Query requires);
+uint32_t *query(Query *requires, tnode **avls, uint32_t *size);
+
+uint32_t *removeDuplicates(uint32_t *arr, uint32_t *size);
