@@ -17,8 +17,6 @@
 
 int main() {
 
-    void loadAvls(tnode *avl, Municipio **municipios, uint32_t size, Comparator comparator, int TYPE);
-
     Municipio **municipios = NULL;
 
     uint32_t size_json;
