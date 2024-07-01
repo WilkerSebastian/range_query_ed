@@ -138,6 +138,14 @@ int main() {
 
     for (size_t i = 0;i < size_json;i++)
         destroyMunicipio(*(municipios + i));
+
+    for (size_t i = 0; i < 5; i++)
+        avl_destroi(*(avls + i));
+
+    destroyHashTable(hashTable);
+
+    free(municipios);
+    free(avls);
     
     return EXIT_SUCCESS;
 }

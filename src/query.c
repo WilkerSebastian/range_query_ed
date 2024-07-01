@@ -2,7 +2,7 @@
 #include "comparators.h"
 
 uint32_t *query(Query *requires, tnode **avls, uint32_t *size) {
-    
+
     uint32_t resultSize[] = {0, 0, 0, 0, 0};
     uint32_t **results = (uint32_t **)calloc(5, sizeof(uint32_t *));
 
@@ -22,20 +22,16 @@ uint32_t *query(Query *requires, tnode **avls, uint32_t *size) {
         results[4] = searchRange(avls[4], requires->minDdd, requires->maxDdd, comparatorSmallUnsignedInteger, &resultSize[4]);
 
     uint32_t totalSize = 0;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) 
         totalSize += resultSize[i];
-    }
 
     uint32_t *tempArray = (uint32_t *)malloc(sizeof(uint32_t) * totalSize);
     uint32_t index = 0;
 
-    for (uint32_t i = 0; i < 5; i++) {
-        if (resultSize[i] > 0) {
-            for (uint32_t j = 0; j < resultSize[i]; j++) {
+    for (uint32_t i = 0; i < 5; i++) 
+        if (resultSize[i] > 0) 
+            for (uint32_t j = 0; j < resultSize[i]; j++) 
                 tempArray[index++] = results[i][j];
-            }
-        }
-    }
 
     tempArray = removeDuplicates(tempArray, &totalSize);
 

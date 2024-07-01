@@ -4,11 +4,21 @@
 #include <stdint.h>
 
 int comparatorDouble(titem item1, titem item2) {
-    return (*(double*)item1) - (*(double*)item2);
+
+    double diff = *(double*)item1 - *(double*)item2;
+    
+    if (diff < 0) 
+        return -1;
+    
+    if (diff > 0) 
+        return 1;
+
+    return 0;
+
 }
 
 int comparatorString(titem item1, titem item2) {
-    return strcmp((char*)item1, (char*)item2);
+    return strcmp((char *) item1, (char *) item2);
 }
 
 int comparatorSmallUnsignedInteger(titem item1, titem item2) {
